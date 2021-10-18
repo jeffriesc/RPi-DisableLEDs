@@ -9,7 +9,8 @@ Now to automate this on start up
 
 Create the service file with: `sudo nano /etc/systemd/system/disable-led.service` paste the following:
 
-`[Unit]
+```
+[Unit]
 Description=Disables the power-LED and active-LED
 
 [Service]
@@ -19,8 +20,9 @@ ExecStart=sh -c "echo 0 | sudo tee /sys/class/leds/led1/brightness > /dev/null &
 ExecStop=sh -c "echo 1 | sudo tee /sys/class/leds/led1/brightness > /dev/null && echo 1 | sudo tee /sys/class/leds/led0/brightness"
 
 [Install]
-WantedBy=multi-user.target`
-
+WantedBy=multi-user.target
+```
+  
 Use ctrl+O and then press enter to write the file and ctrl+X to close out of nano
 
 Note: you can also remove `&& echo 0 | sudo tee /sys/class/leds/led0/brightness` to disable only the active-LED (or vice versa)
