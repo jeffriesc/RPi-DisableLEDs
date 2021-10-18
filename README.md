@@ -28,5 +28,7 @@ Use ctrl+O and then press enter to write the file and ctrl+X to close out of nan
 Note: you can also remove `&& echo 0 | sudo tee /sys/class/leds/led0/brightness` to disable only the active-LED (or vice versa)
 
 Test the service with: `sudo systemctl start disable-led.service`
+
 Stop the the service with: `sudo systemctl stop disable-led.service`
+
 Use `sudo systemctl enable disable-led.service` to enable on startup
