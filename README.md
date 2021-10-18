@@ -1,21 +1,15 @@
 # RPi-DisableLEDs
 This repo contains a service file to disable the LEDs on the Raspberry Pi
 
-Here's how you can disable the 'active'-LED and the power-LED on a rasbperry pi (and probably on other boards too):
+Here's how you can disable the 'active'-LED and the power-LED on a rasbperry pi on your own:
 
-Manual
+If you want to know which LED is which, run: `echo 0 | sudo tee /sys/class/leds/led1/brightness > /dev/null`. Which ever LED is still on is `led0`. In my case the `led1` is the red powered LED and `led0` is the green activity LED. This will be for most, if not all running a Raspberry Pi 3B+ or newer. 
 
-Initially you have to find the correct number of the desired LED.
+Now to automate this on start up
 
-Run: echo 0 | sudo tee /sys/class/leds/led1/brightness > /dev/null
+Create the service file with: `sudo nano /etc/systemd/system/disable-led.service` paste the following:
 
-where you can try different led1s
-On a RPI 4 led1 is the power-LED and led0 is the 'active' LED.
-
-systemd service (to disable the LEDs at startup)
-Create a service file at: /etc/systemd/system/disable-led.service with the following content:
-
-'''[Unit]
+`[Unit]
 Description=Disables the power-LED and active-LED
 
 [Service]
@@ -25,9 +19,12 @@ ExecStart=sh -c "echo 0 | sudo tee /sys/class/leds/led1/brightness > /dev/null &
 ExecStop=sh -c "echo 1 | sudo tee /sys/class/leds/led1/brightness > /dev/null && echo 1 | sudo tee /sys/class/leds/led0/brightness"
 
 [Install]
-WantedBy=multi-user.target'''
+WantedBy=multi-user.target`
 
-you can also remove && echo 0 | sudo tee /sys/class/leds/led0/brightness to disable only the power-LED (or vice versa)
-enable it at startup sudo systemctl enable disable-led.service
-to start immidiately: sudo systemctl start disable-led.service
-to enable the LEDs again: sudo systemctl stop disable-led.service
+Use ctrl+O and then press enter to write the file and ctrl+X to close out of nano
+
+Note: you can also remove `&& echo 0 | sudo tee /sys/class/leds/led0/brightness` to disable only the active-LED (or vice versa)
+
+Test the service with: `sudo systemctl start disable-led.service`
+Stop the the service with: `sudo systemctl stop disable-led.service`
+Use `sudo systemctl enable disable-led.service` to enable on startup
